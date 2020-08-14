@@ -8,6 +8,7 @@ def execute():
     df = read_raw_response_data()
     df = drop_unnecessary_columns(df)
     df = rename_columns(df)
+    df = add_student_demographic_data(df)
     print(df.info())
 
 
@@ -27,3 +28,8 @@ def drop_unnecessary_columns(df) -> pd.DataFrame:
 def rename_columns(df) -> pd.DataFrame:
     column_name_map = csv_to_dict(CONFIG['column_name_mapping_file'])
     return df.rename(columns=column_name_map)
+
+
+def add_student_demographic_data(df: pd.DataFrame) -> pd.DataFrame:
+    demographics = pd.read_excel(CONFIG["student_demographics_file"])
+    return df.merge(demographics, how='left', on='hopkins_id')
