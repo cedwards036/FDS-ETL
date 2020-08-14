@@ -7,8 +7,7 @@ from fds_etl.src.file_parsers import csv_to_dict, single_column_to_list
 def execute():
     df = read_raw_response_data()
     df = drop_unnecessary_columns(df)
-    column_name_map = csv_to_dict(CONFIG['column_name_mapping_file'])
-    df = df.rename(columns=column_name_map)
+    df = rename_columns(df)
     print(df.info())
 
 
@@ -23,3 +22,8 @@ def read_raw_response_data() -> pd.DataFrame:
 def drop_unnecessary_columns(df) -> pd.DataFrame:
     columns_to_drop = single_column_to_list(CONFIG['dropped_columns_file'], skip_header=False)
     return df.drop(columns=columns_to_drop)
+
+
+def rename_columns(df) -> pd.DataFrame:
+    column_name_map = csv_to_dict(CONFIG['column_name_mapping_file'])
+    return df.rename(columns=column_name_map)
