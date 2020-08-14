@@ -20,12 +20,12 @@ def read_raw_response_data() -> pd.DataFrame:
     return pd.concat([ugrad_df, grad_df], sort=True)
 
 
-def drop_unnecessary_columns(df) -> pd.DataFrame:
+def drop_unnecessary_columns(df: pd.DataFrame) -> pd.DataFrame:
     columns_to_drop = single_column_to_list(CONFIG['dropped_columns_file'], skip_header=False)
     return df.drop(columns=columns_to_drop)
 
 
-def rename_columns(df) -> pd.DataFrame:
+def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
     column_name_map = csv_to_dict(CONFIG['column_name_mapping_file'])
     return df.rename(columns=column_name_map)
 
