@@ -10,6 +10,7 @@ def execute():
     df = rename_columns(df)
     df = add_student_demographic_data(df)
     print(df.info())
+    df.to_excel(CONFIG['output_file'], index=False)
 
 
 def read_raw_response_data() -> pd.DataFrame:
