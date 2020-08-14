@@ -32,4 +32,5 @@ def rename_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 def add_student_demographic_data(df: pd.DataFrame) -> pd.DataFrame:
     demographics = pd.read_excel(CONFIG["student_demographics_file"])
+    demographics['hopkins_id'] = demographics['hopkins_id'].str.lower()
     return df.merge(demographics, how='left', on='hopkins_id')
