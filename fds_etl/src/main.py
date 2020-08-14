@@ -17,7 +17,7 @@ def read_raw_response_data() -> pd.DataFrame:
     ugrad_df['education_level'] = 'Undergraduate'
     grad_df = pd.concat([pd.read_csv(f) for f in CONFIG['source_files']['masters']], ignore_index=True)
     grad_df['education_level'] = 'Masters'
-    return pd.concat([ugrad_df, grad_df])
+    return pd.concat([ugrad_df, grad_df], sort=True)
 
 
 def drop_unnecessary_columns(df) -> pd.DataFrame:
