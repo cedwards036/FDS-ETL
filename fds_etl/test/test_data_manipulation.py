@@ -171,3 +171,19 @@ class TestSplitWorkingOutcomesIntoFullAndPartTime(unittest.TestCase):
         recoded_df = dm.split_working_outcomes_into_full_and_part_time(df)
         self.assertFalse('employment_type' in recoded_df.columns)
         self.assertFalse('is_internship' in recoded_df.columns)
+
+
+class TestSplitStillLookingOutcomeIntoWorkAndSchool(unittest.TestCase):
+
+    def test_still_looking_outcomes_with_employment_option_become_still_looking_employment(self):
+        df = pd.DataFrame({'outcome': ['Still Looking'], 'still_seeking_option': ['Employment']})
+        self.assertEqual(dm.split_still_looking_outcomes_into_work_and_school(df)['outcome'][0], 'Still Looking (Employment)')
+
+    def test_still_looking_outcomes_with_cont_ed_option_become_still_looking_cont_ed(self):
+        df = pd.DataFrame({'outcome': ['Still Looking'], 'still_seeking_option': ['Continuing Education']})
+        self.assertEqual(dm.split_still_looking_outcomes_into_work_and_school(df)['outcome'][0], 'Still Looking (Continuing Education)')
+
+    def test_drops_still_seeking_option_column(self):
+        df = pd.DataFrame({'outcome': ['Still Looking'], 'still_seeking_option': ['Continuing Education']})
+        recoded_df = dm.split_still_looking_outcomes_into_work_and_school(df)
+        self.assertFalse('still_seeking_option' in recoded_df.columns)

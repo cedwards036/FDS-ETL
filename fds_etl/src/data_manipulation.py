@@ -50,3 +50,11 @@ def split_working_outcomes_into_full_and_part_time(df: pd.DataFrame) -> pd.DataF
     df.loc[full_time_rows, 'outcome'] = 'Working (Full-Time)'
     df.loc[internships, 'outcome'] = 'Working (Part-Time/Internship)'
     return df.drop(columns=['is_internship', 'employment_type'])
+
+
+def split_still_looking_outcomes_into_work_and_school(df: pd.DataFrame) -> pd.DataFrame:
+    still_looking_employment_rows = (df['outcome'] == 'Still Looking') & (df['still_seeking_option'] == 'Employment')
+    still_looking_cont_ed_rows = (df['outcome'] == 'Still Looking') & (df['still_seeking_option'] == 'Continuing Education')
+    df.loc[still_looking_employment_rows, 'outcome'] = 'Still Looking (Employment)'
+    df.loc[still_looking_cont_ed_rows, 'outcome'] = 'Still Looking (Continuing Education)'
+    return df.drop(columns=['still_seeking_option'])

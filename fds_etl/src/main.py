@@ -14,6 +14,7 @@ def execute():
     df = dm.recode_response_status_as_is_submitted(df)
     df = dm.recode_military_responses(df)
     df = dm.split_working_outcomes_into_full_and_part_time(df)
+    df = dm.split_still_looking_outcomes_into_work_and_school(df)
     df = dm.consolidate_ldl_nps(df)
     df = dm.add_is_jhu_column(df)
     print(df.info())
