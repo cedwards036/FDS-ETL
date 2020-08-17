@@ -1,5 +1,6 @@
 import pandas as pd
 
+import fds_etl.src.data_manipulation as dm
 from fds_etl.src.config import CONFIG
 from fds_etl.src.file_parsers import csv_to_dict, single_column_to_list
 
@@ -10,6 +11,7 @@ def execute():
     df = rename_columns(df)
     df = add_student_demographic_data(df)
     df = add_fds_year(df)
+    df = dm.recode_military_responses(df)
     print(df.info())
     df.to_excel(CONFIG['output_file'], index=False)
 
