@@ -9,6 +9,7 @@ def execute():
     df = drop_unnecessary_columns(df)
     df = rename_columns(df)
     df = add_student_demographic_data(df)
+    df = add_fds_year(df)
     print(df.info())
     df.to_excel(CONFIG['output_file'], index=False)
 
@@ -35,3 +36,8 @@ def add_student_demographic_data(df: pd.DataFrame) -> pd.DataFrame:
     demographics = pd.read_excel(CONFIG["student_demographics_file"])
     demographics['hopkins_id'] = demographics['hopkins_id'].str.lower()
     return df.merge(demographics, how='left', on='hopkins_id')
+
+
+def add_fds_year(df: pd.DataFrame) -> pd.DataFrame:
+    df['fds_year'] = CONFIG['fds_year']
+    return df
