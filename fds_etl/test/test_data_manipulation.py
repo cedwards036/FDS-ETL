@@ -112,3 +112,24 @@ class TestAddIsJHUColumn(unittest.TestCase):
             'cont_ed_school': ['Florida State']
         })
         self.assertFalse(dm.add_is_jhu_column(df)['is_jhu'][0])
+
+
+class TestRecodeResponseStatusAsIsSubmitted(unittest.TestCase):
+
+    def test_responses_with_status_submitted_are_submitted(self):
+        df = pd.DataFrame({'response_status': ['submitted']})
+        self.assertTrue(dm.recode_response_status_as_is_submitted(df)['is_submitted'][0])
+
+    def test_responses_with_status_in_progress_are_not_submitted(self):
+        df = pd.DataFrame({'response_status': ['in_progress']})
+        self.assertFalse(dm.recode_response_status_as_is_submitted(df)['is_submitted'][0])
+
+    def test_responses_with_no_status_are_not_submitted(self):
+        df = pd.DataFrame({'response_status': [nan, None, '']})
+        self.assertFalse(dm.recode_response_status_as_is_submitted(df)['is_submitted'][0])
+        self.assertFalse(dm.recode_response_status_as_is_submitted(df)['is_submitted'][1])
+        self.assertFalse(dm.recode_response_status_as_is_submitted(df)['is_submitted'][2])
+
+    def test_drops_response_status_column(self):
+        df = pd.DataFrame({'response_status': ['submitted']})
+        self.assertFalse('response_status' in dm.recode_response_status_as_is_submitted(df).columns)

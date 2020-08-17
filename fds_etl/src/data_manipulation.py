@@ -28,3 +28,8 @@ def is_jhu(org_name: str) -> bool:
 def add_is_jhu_column(df: pd.DataFrame) -> pd.DataFrame:
     df['is_jhu'] = df.apply(lambda row: is_jhu(row['employer_name']) or is_jhu(row['cont_ed_school']), axis=1)
     return df
+
+
+def recode_response_status_as_is_submitted(df: pd.DataFrame) -> pd.DataFrame:
+    df['is_submitted'] = df['response_status'] == 'submitted'
+    return df.drop(columns=['response_status'])

@@ -11,6 +11,7 @@ def execute():
     df = rename_columns(df)
     df = add_student_demographic_data(df)
     df = add_fds_year(df)
+    df = dm.recode_response_status_as_is_submitted(df)
     df = dm.recode_military_responses(df)
     df = dm.add_is_jhu_column(df)
     print(df.info())
