@@ -67,3 +67,48 @@ class TestRecodeMilitaryResponses(unittest.TestCase):
         self.assertFalse('military_branch' in recoded_df.columns)
         self.assertFalse('military_rank' in recoded_df.columns)
         self.assertFalse('military_specialization' in recoded_df.columns)
+
+
+class TestIsJHU(unittest.TestCase):
+
+    def test_none_is_not_jhu(self):
+        self.assertFalse(dm.is_jhu(None))
+
+    def test_nan_is_not_jhu(self):
+        self.assertFalse(dm.is_jhu(nan))
+
+    def test_empty_str_is_not_jhu(self):
+        self.assertFalse(dm.is_jhu(''))
+
+    def test_simple_hopkins_str_is_jhu(self):
+        self.assertTrue(dm.is_jhu('Johns Hopkins'))
+
+    def test_compound_hopkins_str_is_jhu(self):
+        self.assertTrue(dm.is_jhu('The johns hopkins Hospital'))
+
+    def test_complex_hopkins_str_is_jhu(self):
+        self.assertTrue(dm.is_jhu('   !!!! The johnS   hOPKINS AP   L     '))
+
+
+class TestAddIsJHUColumn(unittest.TestCase):
+
+    def test_rows_with_jhu_employer_are_jhu(self):
+        df = pd.DataFrame({
+            'employer_name': ['Johns Hopkins APL'],
+            'cont_ed_school': [None]
+        })
+        self.assertTrue(dm.add_is_jhu_column(df)['is_jhu'][0])
+
+    def test_rows_with_jhu_grad_school_are_jhu(self):
+        df = pd.DataFrame({
+            'employer_name': [None],
+            'cont_ed_school': ['Johns Hopkins Whiting School']
+        })
+        self.assertTrue(dm.add_is_jhu_column(df)['is_jhu'][0])
+
+    def test_rows_without_jhu_grad_school_or_employer_are_not_jhu(self):
+        df = pd.DataFrame({
+            'employer_name': ['Accenture'],
+            'cont_ed_school': ['Florida State']
+        })
+        self.assertFalse(dm.add_is_jhu_column(df)['is_jhu'][0])

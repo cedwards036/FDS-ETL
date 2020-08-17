@@ -12,6 +12,7 @@ def execute():
     df = add_student_demographic_data(df)
     df = add_fds_year(df)
     df = dm.recode_military_responses(df)
+    df = dm.add_is_jhu_column(df)
     print(df.info())
     df.to_excel(CONFIG['output_file'], index=False)
 
