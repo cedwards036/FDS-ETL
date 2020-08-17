@@ -13,6 +13,7 @@ def execute():
     df = add_fds_year(df)
     df = dm.recode_response_status_as_is_submitted(df)
     df = dm.recode_military_responses(df)
+    df = dm.consolidate_ldl_nps(df)
     df = dm.add_is_jhu_column(df)
     print(df.info())
     df.to_excel(CONFIG['output_file'], index=False)

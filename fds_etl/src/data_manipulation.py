@@ -33,3 +33,10 @@ def add_is_jhu_column(df: pd.DataFrame) -> pd.DataFrame:
 def recode_response_status_as_is_submitted(df: pd.DataFrame) -> pd.DataFrame:
     df['is_submitted'] = df['response_status'] == 'submitted'
     return df.drop(columns=['response_status'])
+
+
+def consolidate_ldl_nps(df: pd.DataFrame) -> pd.DataFrame:
+    nps_columns = ['ldl_nps_1', 'ldl_nps_2', 'ldl_nps_3']
+    df['max_ldl_nps'] = df[nps_columns].max(axis=1)
+    df['min_ldl_nps'] = df[nps_columns].min(axis=1)
+    return df.drop(columns=nps_columns)

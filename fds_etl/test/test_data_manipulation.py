@@ -133,3 +133,20 @@ class TestRecodeResponseStatusAsIsSubmitted(unittest.TestCase):
     def test_drops_response_status_column(self):
         df = pd.DataFrame({'response_status': ['submitted']})
         self.assertFalse('response_status' in dm.recode_response_status_as_is_submitted(df).columns)
+
+
+class TestConsolidateLDLNPS(unittest.TestCase):
+
+    def test_creates_max_nps_column_taking_the_highest_of_three_nps_scores(self):
+        df = pd.DataFrame({'ldl_nps_1': [7], 'ldl_nps_2': [8], 'ldl_nps_3': [9]})
+        self.assertEqual(dm.consolidate_ldl_nps(df)['max_ldl_nps'][0], 9)
+
+    def test_creates_min_nps_column_taking_the_lowest_of_three_nps_scores(self):
+        df = pd.DataFrame({'ldl_nps_1': [7], 'ldl_nps_2': [8], 'ldl_nps_3': [9]})
+        self.assertEqual(dm.consolidate_ldl_nps(df)['min_ldl_nps'][0], 7)
+
+    def test_drops_original_nps_columns(self):
+        df = pd.DataFrame({'ldl_nps_1': [7], 'ldl_nps_2': [8], 'ldl_nps_3': [9]})
+        self.assertFalse('ldl_nps_1' in dm.consolidate_ldl_nps(df).columns)
+        self.assertFalse('ldl_nps_2' in dm.consolidate_ldl_nps(df).columns)
+        self.assertFalse('ldl_nps_3' in dm.consolidate_ldl_nps(df).columns)
