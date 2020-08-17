@@ -150,3 +150,24 @@ class TestConsolidateLDLNPS(unittest.TestCase):
         self.assertFalse('ldl_nps_1' in dm.consolidate_ldl_nps(df).columns)
         self.assertFalse('ldl_nps_2' in dm.consolidate_ldl_nps(df).columns)
         self.assertFalse('ldl_nps_3' in dm.consolidate_ldl_nps(df).columns)
+
+
+class TestSplitWorkingOutcomesIntoFullAndPartTime(unittest.TestCase):
+
+    def test_working_outcomes_with_part_time_type_become_working_part_time(self):
+        df = pd.DataFrame({'outcome': ['Working'], 'employment_type': ['Part-Time'], 'is_internship': [nan]})
+        self.assertEqual(dm.split_working_outcomes_into_full_and_part_time(df)['outcome'][0], 'Working (Part-Time/Internship)')
+
+    def test_working_outcomes_with_full_time_type_become_working_full_time(self):
+        df = pd.DataFrame({'outcome': ['Working'], 'employment_type': ['Full-Time'], 'is_internship': [False]})
+        self.assertEqual(dm.split_working_outcomes_into_full_and_part_time(df)['outcome'][0], 'Working (Full-Time)')
+
+    def test_internships_become_working_part_time(self):
+        df = pd.DataFrame({'outcome': ['Working'], 'employment_type': ['Full-Time'], 'is_internship': [True]})
+        self.assertEqual(dm.split_working_outcomes_into_full_and_part_time(df)['outcome'][0], 'Working (Part-Time/Internship)')
+
+    def test_drops_employment_type_and_is_internship_columns(self):
+        df = pd.DataFrame({'outcome': ['Working'], 'employment_type': ['Full-Time'], 'is_internship': [True]})
+        recoded_df = dm.split_working_outcomes_into_full_and_part_time(df)
+        self.assertFalse('employment_type' in recoded_df.columns)
+        self.assertFalse('is_internship' in recoded_df.columns)

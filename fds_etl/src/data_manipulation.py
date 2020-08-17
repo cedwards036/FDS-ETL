@@ -40,3 +40,13 @@ def consolidate_ldl_nps(df: pd.DataFrame) -> pd.DataFrame:
     df['max_ldl_nps'] = df[nps_columns].max(axis=1)
     df['min_ldl_nps'] = df[nps_columns].min(axis=1)
     return df.drop(columns=nps_columns)
+
+
+def split_working_outcomes_into_full_and_part_time(df: pd.DataFrame) -> pd.DataFrame:
+    part_time_rows = (df['outcome'] == 'Working') & ((df['employment_type'] == 'Part-Time'))
+    full_time_rows = (df['outcome'] == 'Working') & (df['employment_type'] == 'Full-Time')
+    internships = (df['outcome'] == 'Working') & (df['is_internship'] == True)
+    df.loc[part_time_rows, 'outcome'] = 'Working (Part-Time/Internship)'
+    df.loc[full_time_rows, 'outcome'] = 'Working (Full-Time)'
+    df.loc[internships, 'outcome'] = 'Working (Part-Time/Internship)'
+    return df.drop(columns=['is_internship', 'employment_type'])
