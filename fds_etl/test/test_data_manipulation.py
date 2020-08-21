@@ -187,3 +187,18 @@ class TestSplitStillLookingOutcomeIntoWorkAndSchool(unittest.TestCase):
         df = pd.DataFrame({'outcome': ['Still Looking'], 'still_seeking_option': ['Continuing Education']})
         recoded_df = dm.split_still_looking_outcomes_into_work_and_school(df)
         self.assertFalse('still_seeking_option' in recoded_df.columns)
+
+
+class TestRecodeFellowshipResponses(unittest.TestCase):
+
+    def test_fellowship_responses_have_outcome_of_fellowship(self):
+        df = pd.DataFrame({'outcome': ['Working'], 'is_fellowship': ['Yes'], 'employer_name': ['NIH']})
+        self.assertEqual(dm.recode_fellowship_responses(df)['outcome'][0], 'Fellowship')
+
+    def test_recodes_employer_name_as_fellowship_org(self):
+        df = pd.DataFrame({'outcome': ['Working'], 'is_fellowship': ['Yes'], 'employer_name': ['NIH']})
+        self.assertEqual(dm.recode_fellowship_responses(df)['fellowship_org'][0], 'NIH')
+
+    def test_drops_is_fellowship_column(self):
+        df = pd.DataFrame({'outcome': ['Working'], 'is_fellowship': ['Yes'], 'employer_name': ['NIH']})
+        self.assertFalse('is_fellowship' in dm.recode_fellowship_responses(df).columns)

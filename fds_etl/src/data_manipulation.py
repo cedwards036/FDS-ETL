@@ -58,3 +58,10 @@ def split_still_looking_outcomes_into_work_and_school(df: pd.DataFrame) -> pd.Da
     df.loc[still_looking_employment_rows, 'outcome'] = 'Still Looking (Employment)'
     df.loc[still_looking_cont_ed_rows, 'outcome'] = 'Still Looking (Continuing Education)'
     return df.drop(columns=['still_seeking_option'])
+
+
+def recode_fellowship_responses(df: pd.DataFrame) -> pd.DataFrame:
+    is_fellowship = df['is_fellowship'] == 'Yes'
+    df.loc[is_fellowship, 'outcome'] = 'Fellowship'
+    df.loc[is_fellowship, 'fellowship_org'] = df.loc[is_fellowship, 'employer_name']
+    return df.drop(columns=['is_fellowship'])
