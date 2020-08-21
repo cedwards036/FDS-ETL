@@ -11,12 +11,15 @@ def execute():
     df = rename_columns(df)
     df = add_student_demographic_data(df)
     df = add_fds_year(df)
+    df = split_locations_into_city_state_country(df)
+    df = add_cont_ed_major_supplemental_info(df)
     df = dm.recode_response_status_as_is_submitted(df)
     df = dm.recode_military_responses(df)
     df = dm.split_working_outcomes_into_full_and_part_time(df)
     df = dm.split_still_looking_outcomes_into_work_and_school(df)
     df = dm.consolidate_ldl_nps(df)
     df = dm.add_is_jhu_column(df)
+    df = drop_columns_needed_for_cleaning_but_not_for_analysis(df)
     print(df.info())
     df.to_excel(CONFIG['output_file'], index=False)
 
@@ -45,6 +48,21 @@ def add_student_demographic_data(df: pd.DataFrame) -> pd.DataFrame:
     return df.merge(demographics, how='left', on='hopkins_id')
 
 
+def split_locations_into_city_state_country(df: pd.DataFrame) -> pd.DataFrame:
+    locations = pd.read_excel(CONFIG["location_mapping_file"], encoding='utf-8')
+    return df.merge(locations, how='left', left_on='location', right_on='raw_location').drop(columns=['location', 'raw_location'])
+
+
+def add_cont_ed_major_supplemental_info(df: pd.DataFrame) -> pd.DataFrame:
+    df['cont_ed_major_group'] = ''
+    df['cont_ed_degree'] = ''
+    return df
+
+
 def add_fds_year(df: pd.DataFrame) -> pd.DataFrame:
     df['fds_year'] = CONFIG['fds_year']
     return df
+
+
+def drop_columns_needed_for_cleaning_but_not_for_analysis(df: pd.DataFrame) -> pd.DataFrame:
+    return df.drop(columns=['hopkins_id', 'pay_schedule'])
