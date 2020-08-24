@@ -1,4 +1,5 @@
 import re
+from typing import List
 
 import pandas as pd
 
@@ -65,3 +66,8 @@ def recode_fellowship_responses(df: pd.DataFrame) -> pd.DataFrame:
     df.loc[is_fellowship, 'outcome'] = 'Fellowship'
     df.loc[is_fellowship, 'fellowship_org'] = df.loc[is_fellowship, 'employer_name']
     return df.drop(columns=['is_fellowship'])
+
+
+def recode_boolean_columns_to_excel_friendly_strings(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
+    df[columns] = df[columns].fillna('').replace({0: 'FALSE', 1: 'TRUE'})
+    return df

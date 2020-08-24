@@ -202,3 +202,19 @@ class TestRecodeFellowshipResponses(unittest.TestCase):
     def test_drops_is_fellowship_column(self):
         df = pd.DataFrame({'outcome': ['Working'], 'is_fellowship': ['Yes'], 'employer_name': ['NIH']})
         self.assertFalse('is_fellowship' in dm.recode_fellowship_responses(df).columns)
+
+
+class TestRecodeBooleanColumnsToExcelFriendlyStrings(unittest.TestCase):
+
+    def test_converts_blanks_and_nans_to_empty_string(self):
+        df = pd.DataFrame({'field': [nan, None, '']})
+        expected = pd.DataFrame({'field': ['', '', '']})
+        assert_frame_equal(expected, dm.recode_boolean_columns_to_excel_friendly_strings(df, ['field']))
+
+    def test_converts_0_to_false_string(self):
+        df = pd.DataFrame({'field': [0]})
+        self.assertEqual(dm.recode_boolean_columns_to_excel_friendly_strings(df, ['field'])['field'][0], 'FALSE')
+
+    def test_converts_1_to_true_string(self):
+        df = pd.DataFrame({'field': [1]})
+        self.assertEqual(dm.recode_boolean_columns_to_excel_friendly_strings(df, ['field'])['field'][0], 'TRUE')

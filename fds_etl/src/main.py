@@ -20,6 +20,7 @@ def execute():
     df = dm.split_still_looking_outcomes_into_work_and_school(df)
     df = dm.consolidate_ldl_nps(df)
     df = dm.add_is_jhu_column(df)
+    df = recode_boolean_columns_to_excel_friendly_strings(df)
     df = drop_columns_needed_for_cleaning_but_not_for_analysis(df)
     print(df.info())
     df.to_excel(CONFIG['output_file'], index=False)
@@ -67,3 +68,8 @@ def add_fds_year(df: pd.DataFrame) -> pd.DataFrame:
 
 def drop_columns_needed_for_cleaning_but_not_for_analysis(df: pd.DataFrame) -> pd.DataFrame:
     return df.drop(columns=['hopkins_id', 'pay_schedule'])
+
+
+def recode_boolean_columns_to_excel_friendly_strings(df: pd.DataFrame) -> pd.DataFrame:
+    columns = ['is_athlete', 'is_first_gen', 'is_pell_eligible', 'is_urm']
+    return dm.recode_boolean_columns_to_excel_friendly_strings(df, columns)
