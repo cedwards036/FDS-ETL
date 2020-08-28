@@ -36,7 +36,7 @@ def recode_response_status_as_is_submitted(df: pd.DataFrame) -> pd.DataFrame:
     return df.drop(columns=['response_status'])
 
 
-def consolidate_ldl_nps(df: pd.DataFrame) -> pd.DataFrame:
+def calculate_min_and_max_ldl_nps(df: pd.DataFrame) -> pd.DataFrame:
     nps_columns = ['ldl_nps_1', 'ldl_nps_2', 'ldl_nps_3']
     df['max_ldl_nps'] = df[nps_columns].max(axis=1)
     df['min_ldl_nps'] = df[nps_columns].min(axis=1)
@@ -44,7 +44,7 @@ def consolidate_ldl_nps(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def split_working_outcomes_into_full_and_part_time(df: pd.DataFrame) -> pd.DataFrame:
-    part_time_rows = (df['outcome'] == 'Working') & ((df['employment_type'] == 'Part-Time'))
+    part_time_rows = (df['outcome'] == 'Working') & (df['employment_type'] == 'Part-Time')
     full_time_rows = (df['outcome'] == 'Working') & (df['employment_type'] == 'Full-Time')
     internships = (df['outcome'] == 'Working') & (df['is_internship'] == True)
     df.loc[part_time_rows, 'outcome'] = 'Working (Part-Time/Internship)'

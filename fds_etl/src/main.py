@@ -18,7 +18,7 @@ def execute():
     df = dm.recode_fellowship_responses(df)
     df = dm.split_working_outcomes_into_full_and_part_time(df)
     df = dm.split_still_looking_outcomes_into_work_and_school(df)
-    df = dm.consolidate_ldl_nps(df)
+    df = dm.calculate_min_and_max_ldl_nps(df)
     df = dm.add_is_jhu_column(df)
     df = recode_boolean_columns_to_excel_friendly_strings(df)
     df = drop_columns_needed_for_cleaning_but_not_for_analysis(df)
