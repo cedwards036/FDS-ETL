@@ -18,7 +18,7 @@ def execute():
     df = dm.recode_fellowship_responses(df)
     df = dm.split_working_outcomes_into_full_and_part_time(df)
     df = dm.split_still_looking_outcomes_into_work_and_school(df)
-    df = dm.calculate_min_and_max_ldl_nps(df)
+    df = dm.add_consolidated_ldl_nps_columns(df)
     df = dm.add_is_jhu_column(df)
     df = recode_boolean_columns_to_excel_friendly_strings(df)
     df = drop_columns_needed_for_cleaning_but_not_for_analysis(df)
@@ -51,7 +51,7 @@ def add_student_demographic_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def split_locations_into_city_state_country(df: pd.DataFrame) -> pd.DataFrame:
-    locations = pd.read_excel(CONFIG["location_mapping_file"], encoding='utf-8')
+    locations = pd.read_excel(CONFIG["location_mapping_file"])
     return df.merge(locations, how='left', left_on='location', right_on='raw_location').drop(columns=['location', 'raw_location'])
 
 

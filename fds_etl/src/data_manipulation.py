@@ -36,8 +36,9 @@ def recode_response_status_as_is_submitted(df: pd.DataFrame) -> pd.DataFrame:
     return df.drop(columns=['response_status'])
 
 
-def calculate_min_and_max_ldl_nps(df: pd.DataFrame) -> pd.DataFrame:
+def add_consolidated_ldl_nps_columns(df: pd.DataFrame) -> pd.DataFrame:
     nps_columns = ['ldl_nps_1', 'ldl_nps_2', 'ldl_nps_3']
+    df['avg_ldl_nps'] = df[nps_columns].mean(axis=1)
     df['max_ldl_nps'] = df[nps_columns].max(axis=1)
     df['min_ldl_nps'] = df[nps_columns].min(axis=1)
     return df.drop(columns=nps_columns)
