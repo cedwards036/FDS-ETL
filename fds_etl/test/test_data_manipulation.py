@@ -222,3 +222,20 @@ class TestRecodeBooleanColumnsToExcelFriendlyStrings(unittest.TestCase):
     def test_converts_1_to_true_string(self):
         df = pd.DataFrame({'field': [1]})
         self.assertEqual(dm.recode_boolean_columns_to_excel_friendly_strings(df, ['field'])['field'][0], 'TRUE')
+
+
+class TestExpandExperientialLearningColumn(unittest.TestCase):
+
+    def test_creates_new_columns_for_each_of_the_given_column_names(self):
+        df = pd.DataFrame({'activities_at_jhu': ['research']})
+        value_to_col_name_map = {'research': 'did_research', 'internship': 'did_internship', 'co-op': 'did_co_op'}
+        expanded_df = dm.expand_experiential_learning_column(df, value_to_col_name_map)
+        for col_name in value_to_col_name_map.values():
+            self.assertTrue(col_name in expanded_df.columns)
+
+    def test_sets_new_column_to_true_if_activities_at_jhu_contains_value(self):
+        df = pd.DataFrame({'activities_at_jhu': ['research, internship', 'full-time job']})
+        value_to_col_name_map = {'research': 'did_research'}
+        expanded_df = dm.expand_experiential_learning_column(df, value_to_col_name_map)
+        self.assertTrue(expanded_df.iloc[0]['did_research'])
+        self.assertFalse(expanded_df.iloc[1]['did_research'])

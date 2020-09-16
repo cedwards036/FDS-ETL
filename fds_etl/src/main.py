@@ -20,6 +20,7 @@ def execute():
     df = dm.split_still_looking_outcomes_into_work_and_school(df)
     df = dm.add_consolidated_ldl_nps_columns(df)
     df = dm.add_is_jhu_column(df)
+    df = expand_activities_at_jhu_into_multiple_columns(df)
     df = recode_boolean_columns_to_excel_friendly_strings(df)
     df = drop_columns_needed_for_cleaning_but_not_for_analysis(df)
     print(df.info())
@@ -67,9 +68,25 @@ def add_fds_year(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def drop_columns_needed_for_cleaning_but_not_for_analysis(df: pd.DataFrame) -> pd.DataFrame:
-    return df.drop(columns=['hopkins_id', 'pay_schedule'])
+    return df.drop(columns=['pay_schedule'])
 
 
 def recode_boolean_columns_to_excel_friendly_strings(df: pd.DataFrame) -> pd.DataFrame:
     columns = ['is_athlete', 'is_first_gen', 'is_pell_eligible', 'is_urm']
     return dm.recode_boolean_columns_to_excel_friendly_strings(df, columns)
+
+
+def expand_activities_at_jhu_into_multiple_columns(df: pd.DataFrame) -> pd.DataFrame:
+    value_to_col_name_map = {
+        'Independent research with a faculty member': 'did_faculty_research',
+        'Other research': 'did_other_research',
+        'Internship/practicum': 'did_internship',
+        'Study abroad': 'did_study_abroad',
+        'On campus job': 'had_on_campus_job',
+        'Leadership in student organization': 'did_student_org_leadership',
+        'Entrepreneurship': 'did_entrepreneurship',
+        'Experiential learning trip': 'did_exp_learning_trip',
+        'Community impact and service': 'did_community_service',
+        'Connection with a mentor': 'connected_with_mentor',
+    }
+    return dm.expand_experiential_learning_column(df, value_to_col_name_map)

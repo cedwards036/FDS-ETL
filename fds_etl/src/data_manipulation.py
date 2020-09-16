@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import List, Dict
 
 import pandas as pd
 
@@ -71,4 +71,10 @@ def recode_fellowship_responses(df: pd.DataFrame) -> pd.DataFrame:
 
 def recode_boolean_columns_to_excel_friendly_strings(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
     df[columns] = df[columns].fillna('').replace({0: 'FALSE', 1: 'TRUE'})
+    return df
+
+
+def expand_experiential_learning_column(df: pd.DataFrame, value_to_col_name_map: Dict[str, str]) -> pd.DataFrame:
+    for value, col_name in value_to_col_name_map.items():
+        df[col_name] = df['activities_at_jhu'].str.contains(value)
     return df
