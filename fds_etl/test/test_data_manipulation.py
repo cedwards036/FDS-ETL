@@ -196,15 +196,16 @@ class TestSplitStillLookingOutcomeIntoWorkAndSchool(unittest.TestCase):
 class TestRecodeFellowshipResponses(unittest.TestCase):
 
     def test_fellowship_responses_have_outcome_of_fellowship(self):
-        df = pd.DataFrame({'outcome': ['Working'], 'is_fellowship': ['Yes'], 'employer_name': ['NIH']})
+        df = pd.DataFrame({'outcome': ['Working', 'Working'], 'is_fellowship': ['Yes', nan], 'employer_name': ['NIH', 'Fulbright'], 'employment_type': ['Organization', 'Fellowship']})
         self.assertEqual(dm.recode_fellowship_responses(df)['outcome'][0], 'Fellowship')
+        self.assertEqual(dm.recode_fellowship_responses(df)['outcome'][1], 'Fellowship')
 
     def test_recodes_employer_name_as_fellowship_org(self):
-        df = pd.DataFrame({'outcome': ['Working'], 'is_fellowship': ['Yes'], 'employer_name': ['NIH']})
+        df = pd.DataFrame({'outcome': ['Working'], 'is_fellowship': ['Yes'], 'employer_name': ['NIH'], 'employment_type': ['Organization']})
         self.assertEqual(dm.recode_fellowship_responses(df)['fellowship_org'][0], 'NIH')
 
     def test_drops_is_fellowship_column(self):
-        df = pd.DataFrame({'outcome': ['Working'], 'is_fellowship': ['Yes'], 'employer_name': ['NIH']})
+        df = pd.DataFrame({'outcome': ['Working'], 'is_fellowship': ['Yes'], 'employer_name': ['NIH'], 'employment_type': ['Organization']})
         self.assertFalse('is_fellowship' in dm.recode_fellowship_responses(df).columns)
 
 
