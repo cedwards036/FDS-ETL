@@ -23,8 +23,13 @@ def execute():
     df = expand_activities_at_jhu_into_multiple_columns(df)
     df = recode_boolean_columns_to_excel_friendly_strings(df)
     df = drop_columns_needed_for_cleaning_but_not_for_analysis(df)
+    shortform_df = dm.create_shortform_df(df, ['jhu_major', 'jhu_degree', 'jhu_college'])
     print(df.info())
-    df.to_excel(CONFIG['output_file'], index=False)
+    print(shortform_df.info())
+    for filepath in CONFIG['longform_output_files']:
+        df.to_excel(filepath, index=False)
+    for filepath in CONFIG['shortform_output_files']:
+        shortform_df.to_excel(filepath, index=False)
 
 
 def read_raw_response_data() -> pd.DataFrame:

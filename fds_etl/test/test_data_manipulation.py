@@ -240,3 +240,25 @@ class TestExpandExperientialLearningColumn(unittest.TestCase):
         expanded_df = dm.expand_experiential_learning_column(df, value_to_col_name_map)
         self.assertTrue(expanded_df.iloc[0]['did_research'])
         self.assertFalse(expanded_df.iloc[1]['did_research'])
+
+
+class TestCreateShortformDF(unittest.TestCase):
+
+    def test_pivots_and_concatenates_all_specified_columns(self):
+        df = pd.DataFrame({
+            'id_field': ['osfij4', 'osfij4', 'osfij4', 'jfjefu'],
+            'some_other_field': ['a', 'a', 'a', 'b'],
+            'yet_another_field': [1, 1, 1, nan],
+            'major': ['Comp Sci', 'Psych', 'English', 'Biology'],
+            'degree': ['B.S.', 'B.A.', 'B.A.', 'M.A.'],
+            'college': ['wse', 'ksas', 'ksas', 'ksas']
+        })
+        expected = pd.DataFrame({
+            'id_field': ['jfjefu', 'osfij4'],
+            'some_other_field': ['b', 'a'],
+            'yet_another_field': [nan, 1],
+            'major': ['Biology', 'Comp Sci; English; Psych'],
+            'degree': ['M.A.', 'B.A.; B.S.'],
+            'college': ['ksas', 'ksas; wse']
+        })
+        assert_frame_equal(dm.create_shortform_df(df, ['major', 'degree', 'college']), expected)

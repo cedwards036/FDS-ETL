@@ -1,6 +1,7 @@
 import re
 from typing import List, Dict
 
+import numpy as np
 import pandas as pd
 
 
@@ -78,3 +79,17 @@ def expand_experiential_learning_column(df: pd.DataFrame, value_to_col_name_map:
     for value, col_name in value_to_col_name_map.items():
         df[col_name] = df['activities_at_jhu'].str.contains(value)
     return df
+
+
+def create_shortform_df(df: pd.DataFrame, cols_to_collapse: List[str]) -> pd.DataFrame:
+    id_vars = list(filter(lambda x: x not in cols_to_collapse, df.columns))
+    # need to temporarily fill all na with a placeholder because of bug in Pandas 1.1
+    # that breaks the dropna parameter of df.groupby()
+    temp_na_replacement = '!@2#3$4%5^6&~~~~'
+    shortform_df = df \
+        .fillna(temp_na_replacement) \
+        .groupby(by=id_vars)[cols_to_collapse] \
+        .agg({col: lambda x: '; '.join(sorted(set(x))) for col in cols_to_collapse}) \
+        .reset_index() \
+        .replace({temp_na_replacement: np.nan})
+    return shortform_df
